@@ -2,4 +2,7 @@
 
 {% block body %}
     <h1>Welcome to my page</h1>
+    {% for user in users %}
+        <p>{{ user.username }}'s password is {{ user.password }}</p>
+    {% endfor %}
 {% endblock %}
