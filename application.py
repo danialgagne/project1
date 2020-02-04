@@ -1,7 +1,8 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, session, redirect, render_template, request, url_for
+from flask import Flask, flash, session, \
+    redirect, render_template, request, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -39,6 +40,27 @@ def sign_up():
                 {"username": username, "password": password})
         db.commit()
 
+        flash("Registered successfully!")
         return redirect(url_for('index'))
     else:
         return render_template("sign_up.html")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+        username = request.form.get('username-input')
+        password = request.form.get('password-input')
+
+        user = db.execute("""
+                            SELECT * FROM users 
+                            WHERE username = :username 
+                            AND password = :password""",
+                            {"username": username, "password": password})
+        if user.rowcount == 1:
+            flash('signed in successfully')
+            return redirect(url_for('index'))
+        else:
+            flash('invalid username/password')
+            return render_template("login.html")
+    else:
+        return render_template("login.html")
