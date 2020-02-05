@@ -26,8 +26,10 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    users = db.execute("SELECT * FROM users").fetchall()
-    return render_template("index.html", users=users)
+    if 'username' in session:
+        users = db.execute("SELECT * FROM users").fetchall()
+        return render_template("index.html", users=users)
+    return redirect(url_for('login'))
 
 
 @app.route("/sign_up", methods=["GET", "POST"])
@@ -57,6 +59,7 @@ def login():
                             AND password = :password""",
                             {"username": username, "password": password})
         if user.rowcount == 1:
+            session['username'] = username
             flash('signed in successfully')
             return redirect(url_for('index'))
         else:
@@ -64,3 +67,8 @@ def login():
             return render_template("login.html")
     else:
         return render_template("login.html")
+
+@app.route("/logout")
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
