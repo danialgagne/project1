@@ -46,6 +46,7 @@ def sign_up():
         return redirect(url_for('index'))
     else:
         return render_template("sign_up.html")
+    # TODO: catch unique username constraint
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
