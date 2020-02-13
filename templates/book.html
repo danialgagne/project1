@@ -8,6 +8,7 @@
     <h3><b>Year:</b> {{ book_details.year }}</h3>
     <h3><b>ISBN:</b> {{ book_details.isbn }}</h3>
 
+    {% if 'id' in session %}
     <form action="{{ url_for('book', isbn=book_details.isbn) }}" method="POST">
         <div class="form-group">
             <label for="rating-select">Rating</label>
@@ -24,4 +25,5 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    {% endif %}
 {% endblock %}

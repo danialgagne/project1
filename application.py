@@ -28,7 +28,6 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
     if 'id' in session:
         search_term = request.args.get('search-input')
-        print(session['id'])
 
         if search_term is None:
             results = []
