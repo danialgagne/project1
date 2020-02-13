@@ -32,15 +32,12 @@ def index():
         if search_term is None:
             results = []
         else:
-            book_results = db.execute(
-                f"SELECT * FROM books WHERE LOWER(title) LIKE '%{search_term.lower()}%'"
+            search_term = search_term.lower()
+            results = db.execute(
+                f"SELECT books.isbn as isbn, books.title as title, books.year as year, authors.name as name FROM books JOIN authors ON authors.id = books.author_id WHERE (LOWER(title) LIKE '%{search_term}%' OR LOWER(isbn) LIKE '%{search_term}%' OR LOWER(name) LIKE '%{search_term}%');"
             ).fetchall()
-            isbn_results = db.execute(
-                f"SELECT * FROM books WHERE LOWER(isbn) LIKE '%{search_term.lower()}%'"
-            ).fetchall()
-            results = book_results + isbn_results
             
-        return render_template("index.html", results=results)
+        return render_template("index.html", results=results, count=len(results))
     return redirect(url_for('login'))
 
 

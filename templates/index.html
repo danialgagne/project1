@@ -9,9 +9,10 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    <h3>{{ count }} search results:</h3>
     <div class="container">
     {% for book in results %}
-        <div><b>ISBN:</b> {{ book.isbn }}<br><b>Title:</b> {{ book.title }}<br><b>Year:</b> {{ book.year }}</div>
+        <div><b>ISBN:</b> {{ book.isbn }}<br><b>Title:</b> {{ book.title }}<br><b>Author:</b> {{ book.name }}<br><b>Year:</b> {{ book.year }}</div>
     {% endfor %}
     </div>
 {% endblock %}
