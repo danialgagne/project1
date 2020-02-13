@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title%}{{ book_details.title }} - {% endblock %}
+
+{% block body %}
+    <h1>{{ book_details.title }}</h1>
+    <h3><b>Author:</b> {{ book_details.name }}</h3>
+    <h3><b>Year:</b> {{ book_details.year }}</h3>
+    <h3><b>ISBN:</b> {{ book_details.isbn }}</h3>
+
+    <form action="{{ url_for('book', isbn=book_details.isbn) }}" method="POST">
+        <div class="form-group">
+            <label for="rating-select">Rating</label>
+            <select class="form-control" id="rating-select" name="rating-select">
+                <option selected>Rate...</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+            </select>
+            <label for="review-input">Review</label>
+            <textarea class="form-control" name="review-text" id="review-text" placeholder="Enter your review"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endblock %}

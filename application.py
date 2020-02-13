@@ -26,8 +26,9 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/")
 def index():
-    if 'username' in session:
+    if 'id' in session:
         search_term = request.args.get('search-input')
+        print(session['id'])
 
         if search_term is None:
             results = []
@@ -69,7 +70,7 @@ def login():
                             AND password = :password""",
                             {"username": username, "password": password})
         if user.rowcount == 1:
-            session['username'] = username
+            session['id'] = user.first().id
             flash('signed in successfully')
             return redirect(url_for('index'))
         else:
@@ -80,5 +81,31 @@ def login():
 
 @app.route("/logout")
 def logout():
-    session.pop('username', None)
+    session.pop('id', None)
     return redirect(url_for('login'))
+
+@app.route("/book/<isbn>", methods=["GET", "POST"])
+def book(isbn):
+    book_details = db.execute(
+        """
+        SELECT
+            books.id AS book_id,
+            books.author_id AS author_id,
+            books.isbn AS isbn,
+            books.title AS title,
+            books.year AS year,
+            authors.name AS name
+        FROM books 
+        JOIN authors 
+        ON authors.id = books.author_id
+        WHERE isbn = :isbn
+        """,
+        {"isbn": isbn}
+    ).first()
+    
+    if request.method == "POST":
+        rating = request.form.get('rating-select')
+        review = request.form.get('review-text')
+        
+
+    return render_template("book.html", book_details=book_details)
