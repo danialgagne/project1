@@ -1,8 +1,17 @@
 {% extends "layout.html" %}
 
 {% block body %}
-    <h1>Welcome to my page</h1>
-    {% for user in users %}
-        <p>{{ user.username }}'s password is {{ user.password }}</p>
+    <h1>Search</h1>
+    <form action="{{ url_for('index') }}">
+        <div class="form-group">
+            <label for="search-input">Search Term</label>
+            <input type="text" class="form-control" name="search-input" id="search-input" placeholder="Search Term">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <div class="container">
+    {% for book in results %}
+        <div>ISBN: {{ book.isbn }}<br>Title: {{ book.title }}<br>Year: {{ book.year }}</div>
     {% endfor %}
+    </div>
 {% endblock %}

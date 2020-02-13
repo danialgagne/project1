@@ -27,8 +27,15 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 def index():
     if 'username' in session:
-        users = db.execute("SELECT * FROM users").fetchall()
-        return render_template("index.html", users=users)
+        search_term = request.args.get('search-input')
+        print(search_term)
+
+        if search_term is None:
+            results = []
+        else:
+            results = db.execute(f"SELECT * FROM books WHERE LOWER(title) LIKE '%{search_term.lower()}%'").fetchall()
+            
+        return render_template("index.html", results=results)
     return redirect(url_for('login'))
 
 
