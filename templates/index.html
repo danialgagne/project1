@@ -11,7 +11,7 @@
     </form>
     <div class="container">
     {% for book in results %}
-        <div>ISBN: {{ book.isbn }}<br>Title: {{ book.title }}<br>Year: {{ book.year }}</div>
+        <div><b>ISBN:</b> {{ book.isbn }}<br><b>Title:</b> {{ book.title }}<br><b>Year:</b> {{ book.year }}</div>
     {% endfor %}
     </div>
 {% endblock %}
