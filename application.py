@@ -113,31 +113,26 @@ def book(isbn):
             {"user_id": user_id, "book_id": book_id}
         ).first()
 
-        if user_book_reviews is None:
-            if request.method == "POST":
-                rating = request.form.get('rating-select')
-                content = request.form.get('review-text')
-
-                db.execute(
-                    """
-                    INSERT INTO reviews (rating, content, user_id, book_id)
-                    VALUES (:rating, :content, :user_id, :book_id)""",
-                    {"rating": rating, "content": content,
-                    "user_id": user_id, "book_id": book_id}
-                )
-                db.commit()
-                return redirect(url_for('book', isbn=isbn))
-
+        if user_book_reviews is not None:
             return render_template(
                 "book.html",
-                book_details=book_details
+                book_details=book_details,
+                user_book_reviews=user_book_reviews
             )
-            
-        return render_template(
-            "book.html",
-            book_details=book_details,
-            user_book_reviews=user_book_reviews
-        )
+
+        if request.method == "POST":
+            rating = request.form.get('rating-select')
+            content = request.form.get('review-text')
+
+            db.execute(
+                """
+                INSERT INTO reviews (rating, content, user_id, book_id)
+                VALUES (:rating, :content, :user_id, :book_id)""",
+                {"rating": rating, "content": content,
+                "user_id": user_id, "book_id": book_id}
+            )
+            db.commit()
+            return redirect(url_for('book', isbn=isbn))
 
     return render_template(
         "book.html",
