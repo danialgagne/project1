@@ -9,21 +9,26 @@
     <h3><b>ISBN:</b> {{ book_details.isbn }}</h3>
 
     {% if 'id' in session %}
-    <form action="{{ url_for('book', isbn=book_details.isbn) }}" method="POST">
-        <div class="form-group">
-            <label for="rating-select">Rating</label>
-            <select class="form-control" id="rating-select" name="rating-select">
-                <option selected>Rate...</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-            </select>
-            <label for="review-input">Review</label>
-            <textarea class="form-control" name="review-text" id="review-text" placeholder="Enter your review"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+        {% if user_book_reviews %}
+            <p><b>Your Rating:</b> {{ user_book_reviews.rating }}</p>
+            <p><b>Your Review:</b> {{ user_book_reviews.content }}</p>
+        {% else %}
+            <form action="{{ url_for('book', isbn=book_details.isbn) }}" method="POST">
+                <div class="form-group">
+                    <label for="rating-select">Rating</label>
+                    <select class="form-control" id="rating-select" name="rating-select">
+                        <option selected>Rate...</option>
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <label for="review-input">Review</label>
+                    <textarea class="form-control" name="review-text" id="review-text" placeholder="Enter your review"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        {% endif %}
     {% endif %}
 {% endblock %}
