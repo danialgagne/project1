@@ -11,8 +11,15 @@
     </form>
     <h3>{{ count }} search results:</h3>
     <div class="container">
-    {% for book in results %}
-        <div><b>ISBN:</b> {{ book.isbn }}<br><b>Title:</b> {{ book.title }}<br><b>Author:</b> {{ book.name }}<br><b>Year:</b> {{ book.year }}</div>
-    {% endfor %}
+        {% for book in results %}
+            <a href="{{ url_for('book', isbn=book.isbn) }}">
+                <div>
+                    <b>ISBN:</b> {{ book.isbn }}<br>
+                    <b>Title:</b> {{ book.title }}<br>
+                    <b>Author:</b> {{ book.name }}<br>
+                    <b>Year:</b> {{ book.year }}
+                </div>
+            </a>
+        {% endfor %}
     </div>
 {% endblock %}
