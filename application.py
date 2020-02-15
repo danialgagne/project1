@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import requests
 
-from flask import Flask, flash, session, \
+from flask import abort, Flask, flash, jsonify, session, \
     redirect, render_template, request, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
@@ -150,3 +150,41 @@ def book(isbn):
         book_details=book_details,
         goodreads_ratings=goodreads_ratings
     )
+
+@app.route("/api/<isbn>")
+def api(isbn):
+    book_details = db.execute(
+        """
+        SELECT
+            books.id AS book_id,
+            books.author_id AS author_id,
+            books.isbn AS isbn,
+            books.title AS title,
+            books.year AS year,
+            authors.name AS name
+        FROM books 
+        JOIN authors 
+        ON authors.id = books.author_id
+        WHERE isbn = :isbn
+        """,
+        {"isbn": isbn}
+    ).first()
+
+    if book_details is None:
+        abort(404)
+
+    res = requests.get(
+        "https://www.goodreads.com/book/review_counts.json",
+        params={"key": os.getenv("GOODREADS_API_KEY"),
+                "isbns": isbn}
+    )
+    goodreads_ratings = res.json()["books"][0]
+
+    return jsonify({
+        "title": book_details.title,
+        "author": book_details.name,
+        "year": book_details.year,
+        "isbn": book_details.isbn,
+        "review_count": goodreads_ratings["ratings_count"],
+        "average_score": goodreads_ratings["average_rating"]
+    })
