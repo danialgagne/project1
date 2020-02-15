@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import requests
 
 from flask import Flask, flash, session, \
     redirect, render_template, request, url_for
@@ -13,6 +14,8 @@ app = Flask(__name__)
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
     raise RuntimeError("DATABASE_URL is not set")
+if not os.getenv("GOODREADS_API_KEY"):
+    raise RuntimeError("GOODREADS_API_KEY is not set")
 
 # Configure session to use filesystem
 app.config["SESSION_PERMANENT"] = False
@@ -102,6 +105,13 @@ def book(isbn):
         {"isbn": isbn}
     ).first()
 
+    res = requests.get(
+        "https://www.goodreads.com/book/review_counts.json",
+        params={"key": os.getenv("GOODREADS_API_KEY"),
+                "isbns": isbn}
+    )
+    goodreads_ratings = res.json()["books"][0]
+
     if 'id' in session:
         user_id = session['id']
         book_id = book_details.book_id
@@ -117,7 +127,8 @@ def book(isbn):
             return render_template(
                 "book.html",
                 book_details=book_details,
-                user_book_reviews=user_book_reviews
+                user_book_reviews=user_book_reviews,
+                goodreads_ratings=goodreads_ratings
             )
 
         if request.method == "POST":
@@ -136,5 +147,6 @@ def book(isbn):
 
     return render_template(
         "book.html",
-        book_details=book_details
+        book_details=book_details,
+        goodreads_ratings=goodreads_ratings
     )

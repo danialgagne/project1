@@ -7,6 +7,9 @@
     <h3><b>Author:</b> {{ book_details.name }}</h3>
     <h3><b>Year:</b> {{ book_details.year }}</h3>
     <h3><b>ISBN:</b> {{ book_details.isbn }}</h3>
+    <h3><b>GoodReads Ratings:</b> {{ goodreads_ratings["ratings_count"] }}</h3>
+    <h3><b>GoodReads Averge Rating:</b> {{ goodreads_ratings["average_rating"] }}</h3>
+
 
     {% if 'id' in session %}
         {% if user_book_reviews %}
